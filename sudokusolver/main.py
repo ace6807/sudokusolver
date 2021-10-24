@@ -67,7 +67,7 @@ class SudokuSolver:
         return True
 
     @staticmethod
-    def check_valid_for_row(board: SudokuBoard, position: BoardPosition, value: int=None):
+    def check_valid_for_direction(board: SudokuBoard, position: BoardPosition, direction_function, value: int=None):
         if not value:
             value = board.get_value(position)
 
@@ -76,19 +76,25 @@ class SudokuSolver:
         else:
             expected_count = 0
 
-        return board.get_row(position).count(value) == expected_count
+        return direction_function(position).count(value) == expected_count
 
-    @staticmethod
-    def check_valid_for_column(board: SudokuBoard, position: BoardPosition, value: int=None):
-        if not value:
-            value = board.get_value(position)
+    @classmethod
+    def check_valid_for_row(cls, board: SudokuBoard, position: BoardPosition, value: int=None):
+        return cls.check_valid_for_direction(
+            board,
+            position,
+            board.get_row,
+            value
+        )
 
-        if value == board.get_value(position):
-            expected_count = 1
-        else:
-            expected_count = 0
-
-        return board.get_column(position).count(value) == expected_count
+    @classmethod
+    def check_valid_for_column(cls, board: SudokuBoard, position: BoardPosition, value: int=None):
+        return cls.check_valid_for_direction(
+            board,
+            position,
+            board.get_column,
+            value
+        )
 
 
     @classmethod
