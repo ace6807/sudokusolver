@@ -80,21 +80,11 @@ class SudokuSolver:
 
     @classmethod
     def check_valid_for_row(cls, board: SudokuBoard, position: BoardPosition, value: int=None):
-        return cls.check_valid_for_direction(
-            board,
-            position,
-            board.get_row,
-            value
-        )
+        return cls.check_valid_for_direction(board, position, board.get_row, value)
 
     @classmethod
     def check_valid_for_column(cls, board: SudokuBoard, position: BoardPosition, value: int=None):
-        return cls.check_valid_for_direction(
-            board,
-            position,
-            board.get_column,
-            value
-        )
+        return cls.check_valid_for_direction(board, position, board.get_column, value)
 
 
     @classmethod
