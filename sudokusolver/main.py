@@ -21,6 +21,12 @@ class SudokuBoard:
     def get_column(self, position: BoardPosition) -> list:
         return [row[position.column] for row in self.board]
 
+    def is_complete(self) -> bool:
+        for row in self.board:
+            if 0 in row:
+                return False
+        return True
+
     def __str__(self) -> str:
         board_str = ""
         for row in self.board:
