@@ -58,20 +58,48 @@ class SudokuSolver:
         return (BoardPosition(cell[0], cell[1]) for cell in itertools.product(row_index_group, column_index_group))
 
     @classmethod
-    def check_valid_for_small_square(cls, board: SudokuBoard, positon: BoardPosition) -> bool:
-        value = board.get_value(positon)
+    def check_valid_for_small_square(cls, board: SudokuBoard, positon: BoardPosition, value:int = None) -> bool:
+        if not value:
+            value = board.get_value(positon)
         for cell in cls.get_containing_small_square(positon):
             if cell != positon and board.get_value(cell) == value:
                 return False
         return True
 
     @staticmethod
-    def check_valid_for_row(board: SudokuBoard, position: BoardPosition):
-        return board.get_row(position).count(board.get_value(position)) == 1
+    def check_valid_for_row(board: SudokuBoard, position: BoardPosition, value: int=None):
+        if not value:
+            value = board.get_value(position)
+
+        if value == board.get_value(position):
+            expected_count = 1
+        else:
+            expected_count = 0
+
+        return board.get_row(position).count(value) == expected_count
 
     @staticmethod
-    def check_valid_for_column(board: SudokuBoard, position: BoardPosition):
-        return board.get_column(position).count(board.get_value(position)) == 1
+    def check_valid_for_column(board: SudokuBoard, position: BoardPosition, value: int=None):
+        if not value:
+            value = board.get_value(position)
+
+        if value == board.get_value(position):
+            expected_count = 1
+        else:
+            expected_count = 0
+
+        return board.get_column(position).count(value) == expected_count
+
+
+    @classmethod
+    def get_possible_values(cls, board: SudokuBoard, position: BoardPosition):
+        return (
+            i for i in range(1,10)
+            if cls.check_valid_for_column(board, position, i) 
+            and cls.check_valid_for_row(board, position, i) 
+            and cls.check_valid_for_small_square(board, position, i)
+        )
+
 
 
 board = SudokuBoard([
