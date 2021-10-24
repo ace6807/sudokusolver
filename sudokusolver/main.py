@@ -1,12 +1,13 @@
-import pprint
 import itertools
-
 from dataclasses import dataclass
+from typing import Optional
+
 
 @dataclass
 class BoardPosition:
     row: int
     column: int
+
 
 class SudokuBoard:
     def __init__(self, board: list) -> None:
@@ -39,6 +40,7 @@ class SudokuBoard:
 
     def __repr__(self) -> str:
         return self.__str__()
+
 
 class SudokuSolver:
     @staticmethod
@@ -86,7 +88,6 @@ class SudokuSolver:
     def check_valid_for_column(cls, board: SudokuBoard, position: BoardPosition, value: int=None):
         return cls.check_valid_for_direction(board, position, board.get_column, value)
 
-
     @classmethod
     def get_possible_values(cls, board: SudokuBoard, position: BoardPosition):
         return (
@@ -96,6 +97,30 @@ class SudokuSolver:
             and cls.check_valid_for_small_square(board, position, i)
         )
 
+    @classmethod
+    def get_next_empty_position(cls, board: SudokuBoard) -> Optional[BoardPosition]:
+        for row_index, row in enumerate(board.board):
+            for column_index, column in enumerate(board.board):
+                next_position = BoardPosition(row_index, column_index)
+                if not board.get_value(next_position):
+                    return next_position
+
+    @classmethod
+    def solve(cls, board: SudokuBoard) -> bool:
+        if board.is_complete():
+            return True
+        
+        next_position = cls.get_next_empty_position(board)
+        possible_values = cls.get_possible_values(board, next_position)
+
+        for possible_value in possible_values:
+            board.board[next_position.row][next_position.column] = possible_value
+        
+            if cls.solve(board):
+                return True
+
+            board.board[next_position.row][next_position.column] = 0
+        return False    
 
 
 board = SudokuBoard([
